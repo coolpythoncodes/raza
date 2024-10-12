@@ -27,7 +27,8 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem}
+    --radius: 0.5rem;
+  }
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -52,7 +53,8 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%}
+    --chart-5: 340 75% 55%;
+  }
 }
 @layer base {
   * {
@@ -61,4 +63,45 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+  .layout-container {
+    @apply mx-auto w-11/12 max-w-[1120px];
+  }
+
+  .error {
+    @apply border border-red-500;
+  }
+}
+
+/* .how-it-works-card {
+  border: 0.5px solid transparent;
+  background-image: linear-gradient(
+    152.14deg,
+    rgba(151, 37, 169, 0.7) 9.96%,
+    rgba(156, 55, 253, 0.7) 100%
+  );
+  background-origin: border-box;
+  background-clip: padding-box,border-box;
+} */
+
+.border-gradient {
+  border: 1px solid transparent; /* Adjust border width as needed */
+  /* border-radius: 16px;   */
+  border-image: linear-gradient(
+      152.14deg,
+      rgba(151, 37, 169, 0.7) 9.96%,
+      rgba(156, 55, 253, 0.7) 100%
+    )
+    1;
+  /* background-origin: border-box; */
+  /* background-clip: padding-box, border-box; */
+}
+
+.text-gradient {
+  background: linear-gradient(123.59deg, #C0A3FF 34.31%, #A069A9 72.84%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
