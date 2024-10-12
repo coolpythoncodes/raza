@@ -1,11 +1,21 @@
 {
   "name": "raza",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {},
+  "scripts": {
+    "dev": "lerna run dev --scope \"@raza/frontend\"",
+    "build": "lerna run build --scope \"@raza/frontend\"",
+    "lint-staged": "lerna run lint-staged --scope \"@raza/frontend\"",
+    "forge-format": "lerna run forge-format --scope \"@raza/foundry\"",
+    "forge-test": "lerna run forge-test --scope \"@raza/foundry\"",
+    "forge-coverage": "lerna run forge-coverage --scope \"@raza/foundry\"",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0"
+  },
   "devDependencies": {
+    "husky": "^9.1.6",
     "lerna": "^8.1.8"
   }
 }

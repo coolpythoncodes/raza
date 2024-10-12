@@ -1,0 +1,2 @@
+pnpm forge-format
+pnpm lint-staged
