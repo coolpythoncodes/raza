@@ -50,8 +50,9 @@ const Navbar = () => {
             ))}
           </ul>
         </nav>
+        <w3m-button />
         <div className="lg:hidden">
-          <Sheet open={isOpen} onOpenChange={onToggle} >
+          <Sheet open={isOpen} onOpenChange={onToggle}>
             <SheetTrigger asChild>
               <Button
                 onClick={onOpen}

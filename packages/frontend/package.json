@@ -7,7 +7,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "lint-staged": "lint-staged"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -20,7 +21,11 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "@reown/appkit": "^1.1.2",
+    "@reown/appkit-adapter-wagmi": "^1.1.2",
     "@t3-oss/env-nextjs": "^0.10.1",
+    "@tanstack/react-query": "^5.59.13",
+    "@wagmi/core": "^2.13.8",
     "ahooks": "^3.8.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -32,6 +37,8 @@
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
+    "viem": "^2.21.23",
+    "wagmi": "^2.12.17",
     "zod": "^3.23.3"
   },
   "devDependencies": {
