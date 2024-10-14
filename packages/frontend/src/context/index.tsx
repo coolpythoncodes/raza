@@ -8,6 +8,7 @@ import React, { type ReactNode } from "react";
 import { cookieToInitialState, WagmiProvider } from "wagmi";
 import { siteConfig } from "@/lib/site";
 import { wagmiAdapter, projectId } from "@/config/wagmi-config";
+import { env } from "@/env";
 
 // Set up queryClient
 const queryClient = new QueryClient();
@@ -20,8 +21,8 @@ if (!projectId) {
 const metadata = {
   name: "Raza",
   description: siteConfig.description,
-  url: "https://reown.com/appkit", // origin must match your domain & subdomain
-  icons: ["https://assets.reown.com/reown-profile-pic.png"],
+  // url: "https://reown.com/appkit", // origin must match your domain & subdomain
+  // icons: ["https://assets.reown.com/reown-profile-pic.png"],
 };
 
 // Create the modal
@@ -29,7 +30,9 @@ export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
   networks: [liskSepolia, anvil],
-  defaultNetwork: liskSepolia,
+  defaultNetwork:
+    env.NEXT_PUBLIC_ENVIRONMENT === "development" ? anvil : liskSepolia,
+  // @ts-expect-error unknown error
   metadata: metadata,
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration

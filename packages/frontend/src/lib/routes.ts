@@ -1,5 +1,5 @@
 export const routes = {
-    home:"/",
-    contest:"/",
-    createContest:"/create-contest"
-}
+  home: "/",
+  contest: "/contest",
+  createContest: "/create-contest",
+};

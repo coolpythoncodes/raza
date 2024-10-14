@@ -1,78 +1,54 @@
-import { contests, howRazaWorks, whyRaza } from "@/components/common/extras";
+import { howRazaWorks, whyRaza } from "@/components/common/extras";
 import HeadingWithArrow from "@/components/common/heading-with-arrow";
 import { Icons } from "@/components/common/icons";
 import PageWrapper from "@/components/common/page-wrapper";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
+import borderlesLogo from "@/public/borderless.svg";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
+import Contest from "./components/contest";
 
 export default function HomePage() {
   return (
     <main className="text-white">
-      <section className="pt-[60px] pb-[44px] bg-hero-bg bg-cover bg-no-repeat">
+      <section className="bg-hero-bg bg-cover bg-no-repeat pb-[44px] pt-[60px]">
         <PageWrapper>
-          <div className="space-y-5 flex flex-col items-center">
-            <div className="space-y-3 text-center max-w-[716px] mx-auto">
-              <h1 className="text-4xl md:text-[44px] font-normal md:leading-[54px]">
-                <span className="text-gradient">Decentralized Contests</span>, Fair Voting, Limitless Creativity
+          <div className="flex flex-col items-center space-y-5">
+            <div className="mx-auto max-w-[716px] space-y-3 text-center">
+              <h1 className="text-4xl font-normal md:text-[44px] md:leading-[54px]">
+                <span className="text-gradient">Decentralized Contests</span>,
+                Fair Voting, Limitless Creativity
               </h1>
-              <p className="text-sm md:text-lg md:leading-6 font-normal">Create, Participate, and Vote in Transparent Contests Powered by Blockchain Technology</p>
+              <p className="text-sm font-normal md:text-lg md:leading-6">
+                Create, Participate, and Vote in Transparent Contests Powered by
+                Blockchain Technology
+              </p>
             </div>
-            <Link href={routes.createContest}><Button className="w-[146px]">Create Contest</Button></Link>
+            <Link href={routes.createContest}>
+              <Button className="w-[146px]">Create Contest</Button>
+            </Link>
+          </div>
+        </PageWrapper>
+      </section>
+
+      {/* Partner */}
+      <section className="relative flex h-[119px] items-center bg-partner-section-bg bg-center bg-no-repeat before:z-10 after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-partner-section-gradient after:content-['']">
+        <PageWrapper className="z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-y-1">
+            <h3 className="text-center text-2xl font-normal leading-[38px] text-[#37265B]">
+              Our Partner
+            </h3>
+            <Image
+              src={borderlesLogo as StaticImageData}
+              alt="borderless logo"
+            />
           </div>
         </PageWrapper>
       </section>
       <div className="space-y-[60px] pt-[60px]">
         {/* Contest */}
-        <section>
-          <PageWrapper>
-            <HeadingWithArrow text="Contests" />
-            <div className="grid grid-cols-1 gap-y-8 pt-10 md:pt-16 lg:grid-cols-3 lg:gap-x-5">
-              {contests?.map((contest, index) => (
-                <div
-                  key={`contests-${index}`}
-                  className="border-gradient transform space-y-5 p-7 font-normal transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-                >
-                  <div className="space-y-3">
-                    <h4 className="line-clamp-1 text-[28px] leading-10">
-                      {contest?.title}
-                    </h4>
-                    <div className="flex items-center gap-x-2">
-                      <div className="h-7 w-7 rounded-full bg-[#D9D9D9]" />
-                      <p className="text-base">{contest?.description}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <p className="text-base text-[#D7C5FF]">
-                      {contest?.duration}
-                    </p>
-                    <div className="space-y-1">
-                      <p className="text-base">Tags:</p>
-                      <div className="flex items-center gap-x-2">
-                        {contest?.tags?.map((tag, index) => (
-                          <div
-                            key={`contest-tags-${index}`}
-                            className="flex h-[30px] w-[88px] items-center justify-center rounded-[100px] bg-[#231443] p-2.5 text-xs leading-[18px]"
-                          >
-                            {tag}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <Link
-                    href={contest?.link}
-                    className="border-gradient hover:bg-custom-gradient flex h-[60px] w-full items-center justify-center text-base font-normal"
-                  >
-                    View Contest
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </PageWrapper>
-        </section>
+        <Contest />
         {/* Why Raza */}
         <section>
           <PageWrapper>

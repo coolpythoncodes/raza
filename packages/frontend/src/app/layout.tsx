@@ -5,6 +5,7 @@ import { kanit } from "@/lib/font";
 import { siteConfig } from "@/lib/site";
 import { headers } from "next/headers";
 import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 import { type Metadata } from "next";
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${kanit.variable} ${kanit.className}`}>
       <body className="flex min-h-dvh flex-col bg-[#2C1F48]">
-        <div className="fixed top-0 z-50 flex h-14 w-full items-center justify-center bg-yellow-400 text-center text-[#2C1F48]">
+        <div className="fixed top-0 z-[9999] flex h-14 w-full items-center justify-center bg-yellow-400 text-center text-[#2C1F48]">
           <p className="text-sm font-semibold">
             You are currently using Lisk Testnet environment. Please note that
             all transactions are for testing purposes only.
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Navbar />
         <ContextProvider cookies={cookies}>
           <div className="flex-1">{children}</div>
+          <Toaster />
         </ContextProvider>
         <Footer />
       </body>

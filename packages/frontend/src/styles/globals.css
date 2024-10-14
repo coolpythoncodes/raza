@@ -100,8 +100,20 @@
 }
 
 .text-gradient {
-  background: linear-gradient(123.59deg, #C0A3FF 34.31%, #A069A9 72.84%);
+  background: linear-gradient(123.59deg, #c0a3ff 34.31%, #a069a9 72.84%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+
+.ql-snow .ql-picker {
+  color: white !important;
+}
+
+.ql-snow .ql-stroke {
+  stroke: white !important;
+}
+
+.ql-toolbar.ql-snow + .ql-container.ql-snow {
+  height: 200px;
 }

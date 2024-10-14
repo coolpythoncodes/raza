@@ -43,14 +43,19 @@ const Navbar = () => {
           <ul className="flex items-center gap-x-[62px] text-white">
             {navLinks?.map((navLink, index) => (
               <li key={`navLinks-${index}`}>
-                <Link href={navLink?.link} className="text-base font-light">
+                <Link
+                  href={navLink?.link}
+                  className="text-base font-light hover:text-[#BB8FFF]"
+                >
                   {navLink?.name}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <w3m-button />
+        <div className="hidden md:block">
+          <w3m-button />
+        </div>
         <div className="lg:hidden">
           <Sheet open={isOpen} onOpenChange={onToggle}>
             <SheetTrigger asChild>
@@ -76,6 +81,8 @@ const Navbar = () => {
                       </Link>
                     </div>
                   ))}
+                  <w3m-button />
+
                   {/* <div>
                     <LinkButton href={routes.contact} text="Contact" />
                   </div> */}

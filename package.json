@@ -8,6 +8,9 @@
     "forge-format": "lerna run forge-format --scope \"@raza/foundry\"",
     "forge-test": "lerna run forge-test --scope \"@raza/foundry\"",
     "forge-coverage": "lerna run forge-coverage --scope \"@raza/foundry\"",
+    "forge-build": "lerna run forge-build --scope \"@raza/foundry\"",
+    "forge-build-copy-files": "lerna run forge-build-copy-files --scope \"@raza/foundry\"",
+    "forge-deploy-factory-anvil": "lerna run forge-deploy-factory-anvil --scope \"@raza/foundry\"",
     "prepare": "husky"
   },
   "dependencies": {
