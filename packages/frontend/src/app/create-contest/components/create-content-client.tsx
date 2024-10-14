@@ -133,8 +133,8 @@ const CreateContentClient = () => {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        // @ts-expect-error unknown error
         description:
+          // @ts-expect-error unknown error
           writeError?.shortMessage || "There was a problem with your request.",
         // action: <ToastAction altText="Try again">Try again</ToastAction>,
       });

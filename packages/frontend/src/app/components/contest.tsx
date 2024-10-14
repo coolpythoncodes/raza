@@ -27,10 +27,11 @@ const Contest = () => {
       <PageWrapper>
         <HeadingWithArrow text="Contests" />
         <div className="grid grid-cols-1 gap-y-8 pt-10 md:pt-16 lg:grid-cols-3 lg:gap-x-5">
-          {/* @ts-expect-error unknown error */}
           {data
+            //   @ts-expect-error unknown error
             ?.reverse()
             ?.slice(0, 3)
+            //   @ts-expect-error unknown error
             ?.map((address, index) => (
               <ContestItem key={`contest-${index}`} address={address} />
             ))}

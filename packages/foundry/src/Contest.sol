@@ -54,15 +54,12 @@ contract Contest is Ownable {
         VotingStarted, // Voting has started for the contest
         Canceled, // Contest has been canceled
         Ended // Contest has ended after voting
+
     }
 
     // Events
     event Contest__ContestCanceled();
-    event Contest__EntrySubmitted(
-        uint256 entryId,
-        address participant,
-        string entry
-    );
+    event Contest__EntrySubmitted(uint256 entryId, address participant, string entry);
     event EntryDeleted(uint256 entryId);
     event VoteCast(address voter, uint256 entryId);
 
@@ -152,9 +149,7 @@ contract Contest is Ownable {
         emit EntryDeleted(entryId);
     }
 
-    function getEntry(
-        uint256 entryId
-    ) public view returns (ParticipantEntry memory entry) {
+    function getEntry(uint256 entryId) public view returns (ParticipantEntry memory entry) {
         return s_entry[entryId];
     }
 
@@ -171,17 +166,13 @@ contract Contest is Ownable {
             return ContestStatus.Inactive; // Contest has not started yet
         }
 
-        if (
-            block.timestamp >= s_entryStartTime &&
-            block.timestamp <= s_entryEndTime
-        ) {
+        if (block.timestamp >= s_entryStartTime && block.timestamp <= s_entryEndTime) {
             return ContestStatus.OpenForParticipants; // Contest is open for participants to join
         }
 
         if (
-            block.timestamp > s_entryEndTime &&
-            block.timestamp >= s_votingStartTime &&
-            block.timestamp <= s_votingEndTime
+            block.timestamp > s_entryEndTime && block.timestamp >= s_votingStartTime
+                && block.timestamp <= s_votingEndTime
         ) {
             return ContestStatus.VotingStarted; // Voting has started
         }
@@ -209,18 +200,17 @@ contract Contest is Ownable {
      * @return A `ContestDetails` struct with the contest's title, description, entry/voting timeframes,organizer, maximium total entries and maximium entries per participant.
      */
     function getContestDetails() external view returns (ContestDetails memory) {
-        return
-            ContestDetails({
-                title: s_title,
-                description: s_description,
-                entryStartTime: s_entryStartTime,
-                entryEndTime: s_entryEndTime,
-                votingStartTime: s_votingStartTime,
-                votingEndTime: s_votingEndTime,
-                organizer: s_organizer,
-                maxTotalEntries: s_maxTotalEntries,
-                maxEntriesPerParticipant: s_maxEntriesPerParticipant
-            });
+        return ContestDetails({
+            title: s_title,
+            description: s_description,
+            entryStartTime: s_entryStartTime,
+            entryEndTime: s_entryEndTime,
+            votingStartTime: s_votingStartTime,
+            votingEndTime: s_votingEndTime,
+            organizer: s_organizer,
+            maxTotalEntries: s_maxTotalEntries,
+            maxEntriesPerParticipant: s_maxEntriesPerParticipant
+        });
     }
 
     /**
@@ -239,10 +229,7 @@ contract Contest is Ownable {
      * @param participant The address of the participant.
      * @return A unique entry ID as a `uint256`.
      */
-    function _generateEntryId(
-        string calldata content,
-        address participant
-    ) internal pure returns (uint256) {
+    function _generateEntryId(string calldata content, address participant) internal pure returns (uint256) {
         return uint256(keccak256(abi.encode(participant, content)));
     }
 
@@ -262,10 +249,7 @@ contract Contest is Ownable {
             revert Contest__ExceededEntryLimit(s_maxEntriesPerParticipant);
         }
 
-        if (
-            (s_allEntryIds.length - s_deletedEntryIds.length) >=
-            s_maxTotalEntries
-        ) {
+        if ((s_allEntryIds.length - s_deletedEntryIds.length) >= s_maxTotalEntries) {
             revert Contest__ExceededTotalMaxEntryLimit(s_maxTotalEntries);
         }
 
@@ -275,12 +259,7 @@ contract Contest is Ownable {
             revert Contest__EntryAlreadyExists();
         }
 
-        s_entry[entryId] = ParticipantEntry({
-            participant: msg.sender,
-            content: content,
-            exists: true,
-            numberOfVotes: 0
-        });
+        s_entry[entryId] = ParticipantEntry({participant: msg.sender, content: content, exists: true, numberOfVotes: 0});
 
         s_participantEntryCount[msg.sender]++;
         s_allEntryIds.push(entryId);
