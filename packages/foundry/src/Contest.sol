@@ -26,6 +26,7 @@ contract Contest is Ownable {
         address organizer;
         uint256 maxTotalEntries;
         uint256 maxEntriesPerParticipant;
+        uint totalVotes;
     }
 
     string public s_title;
@@ -196,8 +197,8 @@ contract Contest is Ownable {
     }
 
     /**
-     * @notice Retrieves the contest details including title, description, timings, organizer, maximium total entries and maximium entries per participant.
-     * @return A `ContestDetails` struct with the contest's title, description, entry/voting timeframes,organizer, maximium total entries and maximium entries per participant.
+     * @notice Retrieves the contest details including title, description, timings, organizer, maximium total entries, maximium entries per participant and total votes.
+     * @return A `ContestDetails` struct with the contest's title, description, entry/voting timeframes,organizer, maximium total entries, maximium entries per participant and total votes.
      */
     function getContestDetails() external view returns (ContestDetails memory) {
         return ContestDetails({
@@ -209,7 +210,8 @@ contract Contest is Ownable {
             votingEndTime: s_votingEndTime,
             organizer: s_organizer,
             maxTotalEntries: s_maxTotalEntries,
-            maxEntriesPerParticipant: s_maxEntriesPerParticipant
+            maxEntriesPerParticipant: s_maxEntriesPerParticipant,
+            totalVotes:s_totalVotes
         });
     }
 

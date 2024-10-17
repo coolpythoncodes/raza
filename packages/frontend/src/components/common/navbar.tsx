@@ -39,7 +39,7 @@ const Navbar = () => {
         <Link href={routes.home}>
           <Icons.logo />
         </Link>
-        <nav className="hidden md:block">
+        <nav className="hidden lg:block">
           <ul className="flex items-center gap-x-[62px] text-white">
             {navLinks?.map((navLink, index) => (
               <li key={`navLinks-${index}`}>
@@ -53,7 +53,7 @@ const Navbar = () => {
             ))}
           </ul>
         </nav>
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <w3m-button />
         </div>
         <div className="lg:hidden">

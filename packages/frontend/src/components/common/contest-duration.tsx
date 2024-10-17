@@ -1,5 +1,6 @@
 import { ContestStatus } from "@/lib/utils";
 import Countdown from "react-countdown";
+import { renderer } from "./count-down-renderer";
 
 type Props = {
   entryStartTime: bigint;
@@ -9,21 +10,6 @@ type Props = {
   status: number;
 };
 
-// @ts-expect-error unknown error
-const renderer = ({ days, hours, minutes, completed }: unknown) => {
-  if (completed) {
-    return <span>Time is up!</span>;
-  } else {
-    return (
-      <span>
-        {days ? `${days} days ` : null}
-        {hours ? `${hours} hrs ` : null}
-        {minutes ? `${minutes} mins ` : null}
-      </span>
-    );
-  }
-};
-
 const ContestDuration = ({
   entryStartTime,
   entryEndTime,
@@ -31,12 +17,14 @@ const ContestDuration = ({
   votingEndTime,
   status,
 }: Props) => {
-  const entryStart = new Date(Number(entryStartTime) * 1000);
-  const entryEnd = new Date(Number(entryEndTime) * 1000);
-  const votingStart = new Date(Number(votingStartTime) * 1000);
-  const votingEnd = new Date(Number(votingEndTime) * 1000);
-
+  const entryStart = Number(entryStartTime) * 1000;
+  const entryEnd = Number(entryEndTime) * 1000;
+  const votingStart = Number(votingStartTime) * 1000;
+  const votingEnd = Number(votingEndTime) * 1000;
+  console.log("entryStart", entryStart);
+  console.log("Date.now()", Date.now());
   const getContestDurationMessage = () => {
+    console.log("status", status);
     switch (status) {
       case ContestStatus.Inactive:
         return (

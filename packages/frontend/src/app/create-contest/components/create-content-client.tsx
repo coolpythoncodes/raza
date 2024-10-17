@@ -323,10 +323,11 @@ const CreateContentClient = () => {
             </div>
           </div>
           <Button disabled={isPending || isConfirming} className="w-full">
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isConfirming
-              ? "Confirming transaction"
-              : "Connect Wallet to submit"}
+            {isPending ||
+              (isConfirming && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ))}
+            {isConfirming ? "Confirming transaction" : "Submit"}
           </Button>
         </form>
       </PageWrapper>
