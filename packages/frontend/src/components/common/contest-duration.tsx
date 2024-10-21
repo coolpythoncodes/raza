@@ -24,7 +24,6 @@ const ContestDuration = ({
   console.log("entryStart", entryStart);
   console.log("Date.now()", Date.now());
   const getContestDurationMessage = () => {
-    console.log("status", status);
     switch (status) {
       case ContestStatus.Inactive:
         return (
@@ -35,12 +34,16 @@ const ContestDuration = ({
         );
       case ContestStatus.OpenForParticipants:
         return (
-          <>
-            <p>Contest participation ends in:</p>
-            <Countdown date={entryEnd} renderer={renderer} />
-            <p>Voting starts in:</p>
-            <Countdown date={votingStart} renderer={renderer} />
-          </>
+          <div className="flex flex-col gap-y-2">
+            <div className="flex items-center gap-x-1">
+              <p>Contest participation ends in:</p>
+              <Countdown date={entryEnd} renderer={renderer} />
+            </div>
+            <div className="flex items-center gap-x-1">
+              <p>Voting starts in:</p>
+              <Countdown date={votingStart} renderer={renderer} />
+            </div>
+          </div>
         );
       case ContestStatus.VotingStarted:
         return (

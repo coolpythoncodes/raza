@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "forge-format": "forge fmt",
-    "forge-test": "forge test",
+    "forge-test": "forge test --via-ir",
     "forge-coverage": "forge coverage",
-    "forge-build": "forge build",
-    "forge-build-copy-files":"forge build && copyfiles -u 1 out/ContestFactory.sol/*.json  ../frontend/src/lib && copyfiles -u 1 out/Contest.sol/*.json ../frontend/src/lib",
+    "forge-build": "forge build --via-ir",
+    "forge-build-copy-files":"forge build --via-ir && copyfiles -u 1 out/ContestFactory.sol/*.json  ../frontend/src/lib && copyfiles -u 1 out/Contest.sol/*.json ../frontend/src/lib",
     "forge-deploy-factory-anvil":"forge script script/DeployContestFactory.s.sol:DeployContestFactory --fork-url http://localhost:8545 --broadcast --sender 0xa0Ee7A142d267C1f36714E4a8F75612F20a79720 --private-key 0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6",
-    "forge-deploy-contest-anvil":"forge script script/DeployContest.s.sol:DeployContest --fork-url http://localhost:8545 --broadcast"
+    "forge-deploy-contest-anvil":"forge script script/DeployContest.s.sol:DeployContest --fork-url http://localhost:8545 --broadcast",
+    "forge-deploy":"npx thirdweb deploy"
   },
   "keywords": [],
   "author": "",

@@ -11,16 +11,20 @@ import UserAddress from "@/components/common/user-address";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { contestContractAbi } from "@/lib/constants";
 import { ContestStatus } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import numeral from "numeral";
 import Countdown from "react-countdown";
-import { useReadContracts } from "wagmi";
+import { TwitterShareButton } from "react-share";
+import { useReadContracts, useWatchBlocks } from "wagmi";
+import Entry from "./entry";
 import SubmitEntry from "./submit-entry";
+import Winners from "./winners";
 
 type Props = {
   slug: `0x${string}`;
 };
 
-const tabList = ["contest", "guidelines", "rewards"];
+const tabList = ["contest", "guidelines", "winners"];
 
 const options: Intl.DateTimeFormatOptions = {
   year: "numeric",
@@ -32,8 +36,17 @@ const options: Intl.DateTimeFormatOptions = {
 };
 
 const ContestPageByAddressClient = ({ slug }: Props) => {
-  console.log("slug", slug);
-  const { data, isPending } = useReadContracts({
+  const router = useRouter();
+  useWatchBlocks({
+    onBlock() {
+      router.refresh();
+    },
+  });
+  const {
+    data,
+    isPending,
+    refetch: refetchContest,
+  } = useReadContracts({
     contracts: [
       {
         address: slug,
@@ -70,8 +83,6 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
     Number(data?.[0]?.result?.votingEndTime) * 1000,
   );
   const status = data?.[1]?.result;
-
-  console.log("entryStartTime", entryStartTime);
 
   const getContestDurationMessage = () => {
     switch (status) {
@@ -111,9 +122,6 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
     }
   };
 
-  console.log("data", data);
-  console.log("isPending", isPending);
-
   if (isPending) return <Loader />;
   return (
     <main className="pb-[100px] pt-6 text-white">
@@ -123,7 +131,9 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
             {/* @ts-expect-error unknown */}
             {data?.[0]?.result?.title}
           </h1>
-          <SubmitEntry address={slug} />
+          {status == ContestStatus.OpenForParticipants ? (
+            <SubmitEntry address={slug} refetchContest={refetchContest} />
+          ) : null}
         </div>
         <div className="mt-6 flex items-center gap-x-3">
           <Icons.logoWithCircle className="h-5 w-5" />
@@ -136,6 +146,14 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
             />
           </div>
         </div>
+        <TwitterShareButton
+          // @ts-expect-error unknown error
+          title={`🚀 Exciting Contest Alert! 🚀 \n\n ${data?.[0]?.result?.title} \n\n 🎉 Join now and stand a chance to win big!🎉 \n\n  Don't forget to follow @devrapture and @borderlessdev for more awesome updates! 🛠️✨ \n\n`}
+          url={window.location.href}
+          related={["@devrapture", "@borderlessdev"]}
+        >
+          Share contest on Twitter to get participants
+        </TwitterShareButton>
         <Tabs defaultValue={tabList[0]}>
           <TabsList className="w-full">
             {tabList?.map((tab, index) => (
@@ -174,7 +192,27 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
                 </div>
               </div>
             </div>
+            {/* entries data */}
+            {/* @ts-expect-error unknown error */}
+            {data?.[2]?.result?.length ? (
+              <section className="mt-[14px] space-y-[25px]">
+                <h1 className="text-xl font-normal leading-7">All entries</h1>
+
+                <div className="flex flex-col gap-y-6">
+                  {/*  @ts-expect-error unknown error  */}
+                  {data?.[2]?.result?.map((entry, index) => (
+                    // @ts-expect-error unknown error
+                    <Entry
+                      key={`entries-${index}`}
+                      address={slug}
+                      {...{ status, entry }}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : null}
           </TabsContent>
+
           {/* Guidance tab */}
           <TabsContent value="guidelines" className="space-y-5">
             <div className="space-y-2">
@@ -249,13 +287,14 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
             </div>
           </TabsContent>
           {/* Rewards tab */}
-          <TabsContent value="rewards">
-            <div className="border-gradient mx-auto mt-[41px] flex max-w-[360px] flex-col items-center gap-y-2 py-6">
+          <TabsContent value="winners">
+            <Winners address={slug} />
+            {/* <div className="border-gradient mx-auto mt-[41px] flex max-w-[360px] flex-col items-center gap-y-2 py-6">
               <Icons.infoEmpty />
               <p className="text-xl font-normal leading-8">
                 This feature is Coming soon
               </p>
-            </div>
+            </div> */}
           </TabsContent>
         </Tabs>
       </PageWrapper>

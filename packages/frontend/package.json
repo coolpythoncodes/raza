@@ -8,7 +8,8 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "copy-env": "cp .env.example .env"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -31,6 +32,7 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.59.13",
     "@types/numeral": "^2.0.5",
+    "@types/pluralize": "^0.0.33",
     "@wagmi/core": "^2.13.8",
     "ahooks": "^3.8.1",
     "class-variance-authority": "^0.7.0",
@@ -42,12 +44,14 @@
     "lucide-react": "^0.452.0",
     "next": "^14.2.4",
     "numeral": "^2.0.6",
+    "pluralize": "^8.0.0",
     "react": "^18.3.1",
     "react-countdown": "^2.3.6",
     "react-day-picker": "8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "react-quill": "^2.0.0",
+    "react-share": "^5.1.0",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
     "truncate-eth-address": "^1.0.2",

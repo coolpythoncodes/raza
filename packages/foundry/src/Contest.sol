@@ -26,7 +26,7 @@ contract Contest is Ownable {
         address organizer;
         uint256 maxTotalEntries;
         uint256 maxEntriesPerParticipant;
-        uint totalVotes;
+        uint256 totalVotes;
     }
 
     string public s_title;
@@ -41,6 +41,9 @@ contract Contest is Ownable {
     uint256[] public s_allEntryIds; // IDs of all entries submitted by participants
     uint256[] public s_deletedEntryIds;
     uint256 public s_maxEntriesPerParticipant;
+    uint256 public s_numberOfWinners;
+    bool public s_winnersComputed;
+    uint256[] private s_winningEntryIds;
 
     mapping(address => uint256) public s_participantEntryCount;
     mapping(uint256 => ParticipantEntry) private s_entry;
@@ -75,6 +78,10 @@ contract Contest is Ownable {
     error Contest__NotInVotingPhase();
     error Contest__InvalidOrDeletedEntry(uint256 entryId);
     error Contest__AlreadyVotedForEntry();
+    error Contest__ContestNotEnded();
+    error Contest__WinnersAlreadyComputed();
+    error Contest__NotEnoughEntries();
+    error Contest__WinnerNotComputed();
 
     /**
      * @notice Initializes the Contest contract with the given parameters.
@@ -97,7 +104,8 @@ contract Contest is Ownable {
         uint256 votingEndTime,
         address organizer,
         uint256 maxEntriesPerParticipant,
-        uint256 maxTotalEntries
+        uint256 maxTotalEntries,
+        uint256 numberOfWinners
     ) Ownable(organizer) {
         s_title = title;
         s_description = description;
@@ -108,6 +116,7 @@ contract Contest is Ownable {
         s_organizer = organizer;
         s_maxTotalEntries = maxTotalEntries;
         s_maxEntriesPerParticipant = maxEntriesPerParticipant;
+        s_numberOfWinners = numberOfWinners;
     }
 
     /**
@@ -134,6 +143,10 @@ contract Contest is Ownable {
         return _submitEntry(content);
     }
 
+    function vote(uint256 entryId) external {
+        _vote(entryId);
+    }
+
     /**
      * @notice Deletes an entry by its ID.
      * @dev Only the contract owner can delete entries.
@@ -148,6 +161,59 @@ contract Contest is Ownable {
         s_entry[entryId].exists = false;
         s_deletedEntryIds.push(entryId);
         emit EntryDeleted(entryId);
+    }
+
+    function computeWinners() external {
+        ContestStatus status = getContestStatus();
+        if (status != ContestStatus.Ended) {
+            revert Contest__ContestNotEnded();
+        }
+
+        if (s_winnersComputed) {
+            revert Contest__WinnersAlreadyComputed();
+        }
+
+        uint256 totalEntries = s_allEntryIds.length - s_deletedEntryIds.length;
+
+        if (totalEntries < s_numberOfWinners) {
+            revert Contest__NotEnoughEntries();
+        }
+
+        uint256[] memory sortedEntryIds = new uint256[](s_allEntryIds.length);
+        uint256 validEntryCount = 0;
+
+        // Filter out deleted entries and prepare for sorting
+        for (uint256 i = 0; i < s_allEntryIds.length; i++) {
+            uint256 entryId = s_allEntryIds[i];
+            if (s_entry[entryId].exists) {
+                sortedEntryIds[validEntryCount] = entryId;
+                validEntryCount++;
+            }
+        }
+
+        // Sort entries by number of votes (descending)
+        for (uint256 i = 0; i < validEntryCount - 1; i++) {
+            for (uint256 j = 0; j < validEntryCount - i - 1; j++) {
+                if (s_entry[sortedEntryIds[j]].numberOfVotes < s_entry[sortedEntryIds[j + 1]].numberOfVotes) {
+                    (sortedEntryIds[j], sortedEntryIds[j + 1]) = (sortedEntryIds[j + 1], sortedEntryIds[j]);
+                }
+            }
+        }
+
+        // Select winners
+        uint256 winnerCount = (s_numberOfWinners < validEntryCount) ? s_numberOfWinners : validEntryCount;
+        for (uint256 i = 0; i < winnerCount; i++) {
+            s_winningEntryIds.push(sortedEntryIds[i]);
+        }
+
+        s_winnersComputed = true;
+    }
+
+    function getWinners() external view returns (uint256[] memory) {
+        if (!s_winnersComputed) {
+            revert Contest__WinnerNotComputed();
+        }
+        return s_winningEntryIds;
     }
 
     function getEntry(uint256 entryId) public view returns (ParticipantEntry memory entry) {
@@ -211,7 +277,7 @@ contract Contest is Ownable {
             organizer: s_organizer,
             maxTotalEntries: s_maxTotalEntries,
             maxEntriesPerParticipant: s_maxEntriesPerParticipant,
-            totalVotes:s_totalVotes
+            totalVotes: s_totalVotes
         });
     }
 
@@ -223,6 +289,10 @@ contract Contest is Ownable {
      */
     function getAllEntryIds() external view returns (uint256[] memory) {
         return s_allEntryIds;
+    }
+
+    function getHasVoted(address voter, uint256 entryId) external view returns (bool) {
+        return s_hasVoted[voter][entryId];
     }
 
     /**

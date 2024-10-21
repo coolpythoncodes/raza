@@ -6,4 +6,5 @@ library Constants {
     string public constant CONTEST_DESCRIPTION = "contest description";
     uint256 public constant CONTEST_MAX_ENTRIES_PER_PARTICIPANT = 2;
     uint256 public constant CONTEST_MAX_TOTAL_ENTRIES = 10;
+    uint256 public constant CONTEST_NUMBER_OF_WINNERS = 3;
 }

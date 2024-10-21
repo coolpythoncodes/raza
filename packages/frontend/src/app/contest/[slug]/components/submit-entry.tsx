@@ -19,9 +19,12 @@ import FormErrorTextMessage from "@/components/common/form-error-text-message";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+// import { useRouter } from "next/navigation";
+// import { routes } from "@/lib/routes";
 
 type Props = {
   address: `0x${string}`;
+  refetchContest: () => void;
 };
 
 const createEntryFormSchema = object({
@@ -30,8 +33,9 @@ const createEntryFormSchema = object({
 
 type FormData = InferType<typeof createEntryFormSchema>;
 
-const SubmitEntry = ({ address }: Props) => {
+const SubmitEntry = ({ address, refetchContest }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
+  // const router = useRouter()
 
   const {
     data: hash,
@@ -49,9 +53,11 @@ const SubmitEntry = ({ address }: Props) => {
   } = useWaitForTransactionReceipt({
     hash,
   });
+
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(createEntryFormSchema),
@@ -64,6 +70,7 @@ const SubmitEntry = ({ address }: Props) => {
       functionName: "submitEntry",
       args: [data?.content],
     });
+    refetchContest();
   };
 
   useEffect(() => {
@@ -91,12 +98,14 @@ const SubmitEntry = ({ address }: Props) => {
 
   useEffect(() => {
     if (isConfirmed) {
+      reset();
+      refetchContest();
+      // router.push(`${routes.contest}/${address}/${entry}`)
       onClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConfirmed]);
-  console.log("writeError", writeError);
-  console.log("isConfirmError", isConfirmError);
+
   return (
     <Dialog open={isOpen} onOpenChange={onToggle}>
       <DialogTrigger asChild>

@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "lerna run dev --scope \"@raza/frontend\"",
     "build": "lerna run build --scope \"@raza/frontend\"",
+    "copy-env": "lerna run copy-env --scope \"@raza/frontend\"",
     "lint-staged": "lerna run lint-staged --scope \"@raza/frontend\"",
     "forge-format": "lerna run forge-format --scope \"@raza/foundry\"",
     "forge-test": "lerna run forge-test --scope \"@raza/foundry\"",
@@ -11,6 +12,7 @@
     "forge-build": "lerna run forge-build --scope \"@raza/foundry\"",
     "forge-build-copy-files": "lerna run forge-build-copy-files --scope \"@raza/foundry\"",
     "forge-deploy-factory-anvil": "lerna run forge-deploy-factory-anvil --scope \"@raza/foundry\"",
+    "forge-deploy": "lerna run forge-deploy --scope \"@raza/foundry\"",
     "prepare": "husky"
   },
   "dependencies": {

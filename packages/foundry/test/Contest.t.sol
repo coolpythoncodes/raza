@@ -14,6 +14,10 @@ contract ContestTest is Test {
 
     address alice = makeAddr("Alice");
     address bob = makeAddr("Bob");
+    address charlie = makeAddr("Charlie");
+    address john = makeAddr("John");
+    address doe = makeAddr("Doe");
+    address sandra = makeAddr("Sandra");
 
     function setUp() public {
         deployer = new DeployContest();
@@ -25,7 +29,8 @@ contract ContestTest is Test {
             block.timestamp + 3 days,
             block.timestamp + 4 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
     }
 
@@ -37,6 +42,7 @@ contract ContestTest is Test {
         assertEq(contest.s_isCanceled(), false, "Contest should not be canceled initially");
         assertEq(contest.s_maxEntriesPerParticipant(), Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT);
         assertEq(contest.s_maxTotalEntries(), Constants.CONTEST_MAX_TOTAL_ENTRIES);
+        assertEq(contest.s_numberOfWinners(), Constants.CONTEST_NUMBER_OF_WINNERS);
     }
 
     function testGetContestStatusInactive() public {
@@ -244,5 +250,118 @@ contract ContestTest is Test {
         vm.startPrank(msg.sender);
         contest.deleteEntry(entryIdToDelete);
         vm.stopPrank();
+    }
+
+    function testSubmitEntryAndVote() public {
+        vm.warp(block.timestamp + 1.5 days);
+
+        // Simulate entry submission by the participant
+        vm.startPrank(alice);
+        uint256 entryId = contest.submitEntry("My first entry");
+        vm.stopPrank();
+
+        // Simulate voting
+        vm.warp(block.timestamp + 2.5 days);
+        vm.startPrank(bob);
+        contest.vote(entryId);
+        vm.stopPrank();
+
+        // Check that Bob's vote was counted
+        Contest.ParticipantEntry memory aliceEntry = contest.getEntry(entryId);
+        bool hasVoted = contest.getHasVoted(bob, entryId);
+        assertTrue(hasVoted, "Bob's vote should be counted");
+        assertEq(aliceEntry.numberOfVotes, 1, "Alice's entry should have 1 vote");
+
+        // Check total vote was counted
+        assertEq(contest.s_totalVotes(), 1, "Total votes should be 1");
+
+        // Bob cannot vote twice for the same entry
+        vm.expectRevert(Contest.Contest__AlreadyVotedForEntry.selector);
+        vm.prank(bob);
+        contest.vote(entryId);
+    }
+
+    function testComputeWinnersSuccessfully() public {
+        // Warp to the entry period
+        vm.warp(block.timestamp + 1.5 days);
+
+        // Participants submit entries
+        vm.startPrank(alice);
+        uint256 aliceEntryId = contest.submitEntry("Alice's entry");
+        vm.stopPrank();
+
+        vm.startPrank(bob);
+        uint256 bobEntryId = contest.submitEntry("Bob's entry");
+        vm.stopPrank();
+
+        vm.startPrank(charlie);
+        uint256 charlieEntryId = contest.submitEntry("Charlie's entry");
+        vm.stopPrank();
+
+        // Warp to voting period
+        vm.warp(block.timestamp + 2.5 days);
+
+        // Voting process
+        vm.startPrank(bob);
+        contest.vote(aliceEntryId);
+        vm.stopPrank();
+
+        vm.startPrank(charlie);
+        contest.vote(aliceEntryId);
+        vm.stopPrank();
+
+        vm.startPrank(john);
+        contest.vote(aliceEntryId);
+        vm.stopPrank();
+
+        vm.startPrank(doe);
+        contest.vote(bobEntryId);
+        vm.stopPrank();
+
+        vm.startPrank(sandra);
+        contest.vote(bobEntryId);
+        vm.stopPrank();
+
+        vm.startPrank(alice);
+        contest.vote(charlieEntryId);
+        vm.stopPrank();
+
+        // Warp to after the voting period ends
+        vm.warp(block.timestamp + 4.5 days);
+
+        // Call computeWinners
+        contest.computeWinners();
+
+        // Assert the winners
+        uint256[] memory winners = contest.getWinners();
+        assertEq(winners.length, Constants.CONTEST_NUMBER_OF_WINNERS, "Should have exactly number of winners");
+        assertEq(winners[0], aliceEntryId, "Alice should be the first winner");
+        assertEq(winners[1], bobEntryId, "Bob should be the second winner");
+        assertEq(winners[2], charlieEntryId, "Charlie should be the third winner");
+
+        // Ensure winners cannot be recomputed
+        vm.expectRevert(Contest.Contest__WinnersAlreadyComputed.selector);
+        contest.computeWinners();
+    }
+
+    function testVotingRevertIfNotInVotingPhase() public {
+        vm.warp(block.timestamp + 1.5 days);
+
+        // Prank as Alice to submit an entry
+        vm.startPrank(alice);
+        uint256 entryId = contest.submitEntry("Alice's Startup Idea");
+        vm.stopPrank();
+
+        // Bob tries to vote before voting has started
+        vm.expectRevert(Contest.Contest__NotInVotingPhase.selector);
+        vm.startPrank(bob);
+        contest.vote(entryId);
+        vm.stopPrank();
+    }
+
+    function testComputeWinnerRevertIfContestNotEnded() public {
+        // Call computeWinners before the contest has ended
+        vm.expectRevert(Contest.Contest__ContestNotEnded.selector);
+        contest.computeWinners();
     }
 }

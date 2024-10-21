@@ -78,6 +78,13 @@ const createContestFormSchema = object({
     .required(
       "Please specify the total number of entries allowed for the contest.",
     ),
+  numberOfWinners: number()
+    .positive("Invalid input")
+    .integer("Invalid input")
+    .typeError("Invalid input")
+    .required(
+      "Please specify the total number of winners allowed for the contest.",
+    ),
 });
 
 type FormData = InferType<typeof createContestFormSchema>;
@@ -97,7 +104,7 @@ const CreateContentClient = () => {
     isSuccess: isConfirmed,
     error: confirmError,
     isError: isConfirmError,
-    data,
+    // data,
   } = useWaitForTransactionReceipt({
     hash,
   });
@@ -118,12 +125,17 @@ const CreateContentClient = () => {
       args: [
         data?.title,
         data?.description,
-        Math.round(data?.entryPeriod?.entryStartTime.getTime() / 1000),
-        Math.round(data?.entryPeriod?.entryEndTime.getTime() / 1000),
-        Math.round(data?.votingPeriod?.votingStartTime.getTime() / 1000),
-        Math.round(data?.votingPeriod?.votingEndTime.getTime() / 1000),
+        Math.round(new Date().getTime() / 1000) + 10,
+        Math.round(new Date().getTime() / 1000) + 1000,
+        Math.round(new Date().getTime() / 1000) + 2000,
+        Math.round(new Date().getTime() / 1000) + 3000,
+        // Math.round(data?.entryPeriod?.entryStartTime.getTime() / 1000),
+        // Math.round(data?.entryPeriod?.entryEndTime.getTime() / 1000),
+        // Math.round(data?.votingPeriod?.votingStartTime.getTime() / 1000),
+        // Math.round(data?.votingPeriod?.votingEndTime.getTime() / 1000),
         data?.numAllowedEntrySubmissions,
         data?.maxTotalEntries,
+        data?.numberOfWinners,
       ],
     });
   };
@@ -158,7 +170,7 @@ const CreateContentClient = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConfirmed]);
 
-  console.log("data", data?.logs[0]?.address);
+  console.log("new Date().now", new Date().getTime());
 
   return (
     <main className="pb-[100px] pt-5 text-white md:pt-[60px]">
@@ -320,6 +332,14 @@ const CreateContentClient = () => {
                 {...register("maxTotalEntries")}
               />
               <FormErrorTextMessage errors={errors?.maxTotalEntries} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="numberOfWinners">Number of Winners</Label>
+              <Input
+                placeholder="Specify the number of winners allowed for the contest"
+                {...register("numberOfWinners")}
+              />
+              <FormErrorTextMessage errors={errors?.numberOfWinners} />
             </div>
           </div>
           <Button disabled={isPending || isConfirming} className="w-full">

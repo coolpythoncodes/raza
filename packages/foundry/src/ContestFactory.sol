@@ -24,7 +24,8 @@ contract ContestFactory {
         uint256 votingStartTime,
         uint256 votingEndTime,
         uint256 numAllowedEntrySubmissions,
-        uint256 maxTotalEntries
+        uint256 maxTotalEntries,
+        uint256 numberOfWinners
     ) external returns (address) {
         _validateContestTimings(entryStartTime, entryEndTime, votingStartTime, votingEndTime);
 
@@ -37,7 +38,8 @@ contract ContestFactory {
             votingEndTime,
             msg.sender,
             numAllowedEntrySubmissions,
-            maxTotalEntries
+            maxTotalEntries,
+            numberOfWinners
         );
 
         s_deployedContests.push(address(newContest));

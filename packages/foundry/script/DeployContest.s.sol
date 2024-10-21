@@ -14,7 +14,8 @@ contract DeployContest is Script {
         uint256 votingStartTime,
         uint256 votingEndTime,
         uint256 numAllowedEntrySubmissions,
-        uint256 maxTotalEntries
+        uint256 maxTotalEntries,
+        uint256 numberOfWinners
     ) external returns (Contest) {
         vm.startBroadcast();
         ContestFactory contest = new ContestFactory();
@@ -26,7 +27,8 @@ contract DeployContest is Script {
             votingStartTime,
             votingEndTime,
             numAllowedEntrySubmissions,
-            maxTotalEntries
+            maxTotalEntries,
+            numberOfWinners
         );
         vm.stopBroadcast();
 

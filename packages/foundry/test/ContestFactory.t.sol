@@ -28,7 +28,8 @@ contract ContestFactoryTest is Test {
             block.timestamp + 2 days,
             block.timestamp + 3 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
         vm.stopPrank();
 
@@ -50,7 +51,8 @@ contract ContestFactoryTest is Test {
             block.timestamp + 2 days,
             block.timestamp + 3 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
         vm.stopPrank();
         // Cast the new contest address to a Contest instance
@@ -79,7 +81,8 @@ contract ContestFactoryTest is Test {
             block.timestamp + 2 days,
             block.timestamp + 3 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
         vm.stopPrank();
     }
@@ -94,7 +97,8 @@ contract ContestFactoryTest is Test {
             block.timestamp + 3 days,
             block.timestamp + 4 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
         vm.startPrank(organizer);
 
@@ -112,7 +116,8 @@ contract ContestFactoryTest is Test {
             block.timestamp + 4 days,
             block.timestamp + 3 days,
             Constants.CONTEST_MAX_ENTRIES_PER_PARTICIPANT,
-            Constants.CONTEST_MAX_TOTAL_ENTRIES
+            Constants.CONTEST_MAX_TOTAL_ENTRIES,
+            Constants.CONTEST_NUMBER_OF_WINNERS
         );
         vm.startPrank(organizer);
 

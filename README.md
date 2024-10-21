@@ -1,7 +1,53 @@
-# raza
+# Raza: Contest Management Smart Contract Suite
 
+Raza is a decentralized contest management platform built on the Ethereum blockchain. The platform allows organizers to create and manage contests, while participants can submit entries and vote during the voting phase. The system ensures transparency and security by leveraging smart contracts.
 
-cast send 0x700b6a60ce7eaaea56f065753d8dcb9653dbad35 
-        "createContest(string,string,uint256,uint256,uint256,uint256,uint256,uint256)" 
-        "Art and NFT Design Competition" "Artists and designers are invited to create and mint their own non-fungible tokens (NFTs) using various digital tools. The contest aims to celebrate creativity in the digital art space, encouraging participants to create unique, visually stunning artwork that can be tokenized on the blockchain. Participants can choose any theme, such as fantasy, abstract, or futuristic designs." 1728923430 1728923530 1728923630 1728923730 5 100 
-        --private-key 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6
+### Smart Contracts Overview
+
+The Raza project consists of two core smart contracts:
+
+**ContestFactory:** Handles the creation of new contests and stores information about all deployed contests.
+
+**Contest:** Manages the individual contest details, including entry submissions, voting, and contest status.
+
+## Technology Stack & Tools
+
+- NextJS
+- Solidity
+- Foundry
+
+### Quickstart
+
+Jumpstart your development with these simple steps:
+
+Clone and Set Up the Project
+
+1. **Clone and Set Up the Project**
+
+```shell bash
+git clone https://github.com/coolpythoncodes/raza
+cd raza
+pnpm install
+```
+
+2. **Update the environment variables**
+
+Copy the env example files to env files
+
+```shell
+pnpm copy-env
+```
+
+3. **Launch the NextJS Application**
+
+```shell
+pnpm dev
+```
+
+## Show your support
+
+Give a ⭐ if you like this project!
+
+## Useful links
+
+- [Verified Contest Factory address on Blockscout etherscan](https://sepolia.etherscan.io/address/0xd0865AF6Bec88c46Bb69697D08c8fA37900CD754)
