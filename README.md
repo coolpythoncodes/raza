@@ -50,4 +50,4 @@ Give a ⭐ if you like this project!
 
 ## Useful links
 
-- [Verified Contest Factory address on Blockscout etherscan](https://sepolia.etherscan.io/address/0xd0865AF6Bec88c46Bb69697D08c8fA37900CD754)
+- [Verified Contest Factory address on Blockscout etherscan](https://sepolia-blockscout.lisk.com/address/0x80c1fd53832d6a0693cdeb5d4db601435ac6eeca)
