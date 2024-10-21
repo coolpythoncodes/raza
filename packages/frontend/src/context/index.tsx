@@ -21,8 +21,8 @@ if (!projectId) {
 const metadata = {
   name: "Raza",
   description: siteConfig.description,
-  // url: "https://reown.com/appkit", // origin must match your domain & subdomain
-  // icons: ["https://assets.reown.com/reown-profile-pic.png"],
+  url: "https://vaza.vercel.app/", // origin must match your domain & subdomain
+  icons: ["https://assets.reown.com/reown-profile-pic.png"],
 };
 
 // Create the modal
@@ -32,7 +32,6 @@ export const modal = createAppKit({
   networks: [liskSepolia, anvil],
   defaultNetwork:
     env.NEXT_PUBLIC_ENVIRONMENT === "development" ? anvil : liskSepolia,
-  // @ts-expect-error unknown error
   metadata: metadata,
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
