@@ -11,14 +11,15 @@ import UserAddress from "@/components/common/user-address";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { contestContractAbi } from "@/lib/constants";
 import { ContestStatus } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import numeral from "numeral";
 import Countdown from "react-countdown";
 import { TwitterShareButton } from "react-share";
-import { useReadContracts, useWatchBlocks } from "wagmi";
+import { useBlockNumber, useReadContracts } from "wagmi";
 import Entry from "./entry";
 import SubmitEntry from "./submit-entry";
 import Winners from "./winners";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type Props = {
   slug: `0x${string}`;
@@ -36,17 +37,10 @@ const options: Intl.DateTimeFormatOptions = {
 };
 
 const ContestPageByAddressClient = ({ slug }: Props) => {
-  const router = useRouter();
-  useWatchBlocks({
-    onBlock() {
-      router.refresh();
-    },
-  });
-  const {
-    data,
-    isPending,
-    refetch: refetchContest,
-  } = useReadContracts({
+  const queryClient = useQueryClient();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+
+  const { data, isPending, queryKey } = useReadContracts({
     contracts: [
       {
         address: slug,
@@ -122,6 +116,12 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
     }
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    queryClient.invalidateQueries({ queryKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockNumber]);
+
   if (isPending) return <Loader />;
   return (
     <main className="pb-[100px] pt-6 text-white">
@@ -132,7 +132,7 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
             {data?.[0]?.result?.title}
           </h1>
           {status == ContestStatus.OpenForParticipants ? (
-            <SubmitEntry address={slug} refetchContest={refetchContest} />
+            <SubmitEntry address={slug} />
           ) : null}
         </div>
         <div className="mt-6 flex items-center gap-x-3">

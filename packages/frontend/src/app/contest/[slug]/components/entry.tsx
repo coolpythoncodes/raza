@@ -107,7 +107,8 @@ const Entry = ({ entry, address, status }: Props) => {
             />
             <Button
               className="h-[42px] w-[168px] rounded-[100px] disabled:cursor-not-allowed"
-              disabled={status !== ContestStatus.VotingStarted}
+              // disabled={status !== ContestStatus.VotingStarted}
+              disabled={true}
               onClick={() => {
                 writeContract({
                   address,

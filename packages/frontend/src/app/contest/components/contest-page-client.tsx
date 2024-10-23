@@ -6,7 +6,7 @@ import {
   contestFactoryContractAbi,
   contractAddressContestFactory,
 } from "@/lib/constants";
-import { useReadContract } from "wagmi";
+import { useBlockNumber, useReadContract } from "wagmi";
 import ContestItem from "./contest-item";
 import PageWrapper from "@/components/common/page-wrapper";
 import Loader from "@/components/common/loader";
@@ -23,13 +23,23 @@ import { redirect } from "next/navigation";
 import { Icons } from "@/components/common/icons";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const ContestPageClient = () => {
-  const { data, isPending, isError } = useReadContract({
+  const queryClient = useQueryClient();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const { data, isPending, isError, queryKey } = useReadContract({
     address: contractAddressContestFactory,
     abi: contestFactoryContractAbi,
     functionName: "getDeployedContests",
   });
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    queryClient.invalidateQueries({ queryKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockNumber]);
 
   if (isPending) return <Loader />;
 

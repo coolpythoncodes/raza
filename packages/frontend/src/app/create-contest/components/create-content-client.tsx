@@ -118,7 +118,6 @@ const CreateContentClient = () => {
   });
 
   const onSubmit = (data: FormData) => {
-    console.log("data", data);
     writeContract({
       address: contractAddressContestFactory,
       abi: contestFactoryContractAbi,
@@ -126,7 +125,7 @@ const CreateContentClient = () => {
       args: [
         data?.title,
         data?.description,
-        Math.round(new Date().getTime() / 1000) + 10,
+        Math.round(new Date().getTime() / 1000) + 100,
         Math.round(new Date().getTime() / 1000) + 1000,
         Math.round(new Date().getTime() / 1000) + 2000,
         Math.round(new Date().getTime() / 1000) + 3000,
@@ -140,7 +139,8 @@ const CreateContentClient = () => {
       ],
     });
   };
-
+  console.log("writeError", writeError);
+  console.log("confirmError", confirmError);
   useEffect(() => {
     if (isWriteError) {
       toast({

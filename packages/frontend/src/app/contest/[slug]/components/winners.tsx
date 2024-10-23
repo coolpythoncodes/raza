@@ -4,9 +4,12 @@ import Loader from "@/components/common/loader";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { contestContractAbi } from "@/lib/constants";
+import { ContestStatus } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
+  useBlockNumber,
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -18,7 +21,9 @@ type Props = {
 };
 
 const Winners = ({ address }: Props) => {
-  const { data, isPending } = useReadContracts({
+  const queryClient = useQueryClient();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const { data, isPending, queryKey } = useReadContracts({
     contracts: [
       {
         address,
@@ -29,6 +34,11 @@ const Winners = ({ address }: Props) => {
         address,
         abi: contestContractAbi,
         functionName: "s_winnersComputed",
+      },
+      {
+        address,
+        abi: contestContractAbi,
+        functionName: "getContestStatus",
       },
     ],
   });
@@ -73,7 +83,11 @@ const Winners = ({ address }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWriteError, isConfirmError]);
 
-  console.log("data", data);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    queryClient.invalidateQueries({ queryKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockNumber]);
 
   if (isPending) return <Loader />;
   return (
@@ -82,7 +96,11 @@ const Winners = ({ address }: Props) => {
         <>
           <Button
             className="disabled:cursor-not-allowed"
-            disabled={!data?.[1]?.result || isPendingWrite || isConfirming}
+            disabled={
+              isPendingWrite ||
+              isConfirming ||
+              !(data?.[2]?.result === ContestStatus.Ended)
+            }
             onClick={() => {
               writeContract({
                 address,

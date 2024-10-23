@@ -59,7 +59,7 @@ export const reactQuillModules = {
     //   [{ font: [] }],
     [{ align: ["right", "center", "justify"] }],
     [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "image"],
+    ["link"],
     //   [{ color: ["red", "#785412"] }],
     //   [{ background: ["red", "#785412"] }],
   ],

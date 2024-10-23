@@ -34,6 +34,7 @@ const ContestItem = ({ address }: Props) => {
   });
 
   console.log("data", data);
+  console.log("status", data?.[1]?.result);
 
   return (
     <div className="border-gradient transform space-y-5 p-7 font-normal text-white transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
@@ -51,8 +52,13 @@ const ContestItem = ({ address }: Props) => {
       </div>
 
       <div className="space-y-3">
-        {/* @ts-expect-error unknown error */}
-        <ContestStatusBadge status={data?.[1]?.result} />
+        <ContestStatusBadge
+          //  @ts-expect-error unknown error
+          status={data?.[1]?.result}
+          // @ts-expect-error unknown error
+          entryEndTime={data?.[0]?.result?.entryEndTime}
+        />
+
         <ContestDuration
           // @ts-expect-error unknown error
           entryStartTime={data?.[0]?.result?.entryStartTime}

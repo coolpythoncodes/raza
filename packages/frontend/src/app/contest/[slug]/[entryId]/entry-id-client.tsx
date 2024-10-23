@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { contestContractAbi } from "@/lib/constants";
 import { ContestStatus } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import numeral from "numeral";
 import pluralize from "pluralize";
@@ -17,6 +18,7 @@ import { useEffect } from "react";
 import Countdown from "react-countdown";
 import { TwitterShareButton } from "react-share";
 import {
+  useBlockNumber,
   useReadContracts,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -28,7 +30,9 @@ type Props = {
 };
 
 const EntryIdClient = ({ slug, entryId }: Props) => {
-  const { data, isPending } = useReadContracts({
+  const queryClient = useQueryClient();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const { data, isPending, queryKey } = useReadContracts({
     contracts: [
       {
         address: slug,
@@ -100,6 +104,12 @@ const EntryIdClient = ({ slug, entryId }: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWriteError, isConfirmError, isConfirmed]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    queryClient.invalidateQueries({ queryKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockNumber]);
 
   const entryStartTime = new Date(
     // @ts-expect-error unknown error

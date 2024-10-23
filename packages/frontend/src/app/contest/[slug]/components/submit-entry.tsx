@@ -25,7 +25,6 @@ import { type InferType, object, string } from "yup";
 
 type Props = {
   address: `0x${string}`;
-  refetchContest: () => void;
 };
 
 const createEntryFormSchema = object({
@@ -34,7 +33,7 @@ const createEntryFormSchema = object({
 
 type FormData = InferType<typeof createEntryFormSchema>;
 
-const SubmitEntry = ({ address, refetchContest }: Props) => {
+const SubmitEntry = ({ address }: Props) => {
   const { isOpen, onClose, onToggle } = useDisclosure();
   // const router = useRouter()
 
@@ -71,9 +70,9 @@ const SubmitEntry = ({ address, refetchContest }: Props) => {
       functionName: "submitEntry",
       args: [data?.content],
     });
-    refetchContest();
   };
-
+  console.log("confirmError", confirmError);
+  console.log("writeError", writeError);
   useEffect(() => {
     if (isWriteError) {
       toast({
@@ -100,7 +99,6 @@ const SubmitEntry = ({ address, refetchContest }: Props) => {
   useEffect(() => {
     if (isConfirmed) {
       reset();
-      refetchContest();
       // router.push(`${routes.contest}/${address}/${entry}`)
       onClose();
     }
