@@ -37,7 +37,7 @@ const ContestPageClient = () => {
     redirect("/");
   }
   return (
-    <main className="pt-[55px]">
+    <main className="py-[55px]">
       <PageWrapper>
         <Breadcrumb>
           <BreadcrumbList>
@@ -74,9 +74,7 @@ const ContestPageClient = () => {
         ) : (
           <div className="border-gradient mx-auto mt-[41px] flex max-w-[360px] flex-col items-center gap-y-2 py-6 text-white">
             <Icons.infoEmpty />
-            <p className="text-xl font-normal leading-8">
-              Nothing contest here
-            </p>
+            <p className="text-xl font-normal leading-8">No contest here</p>
             <Link href={routes.createContest}>
               {" "}
               <Button className="h-10">Create contest</Button>

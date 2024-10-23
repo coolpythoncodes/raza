@@ -19,7 +19,7 @@ import {
   contractAddressContestFactory,
 } from "@/lib/constants";
 import { routes } from "@/lib/routes";
-import { cn } from "@/lib/utils";
+import { cn, reactQuillFormat, reactQuillModules } from "@/lib/utils";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
@@ -118,6 +118,7 @@ const CreateContentClient = () => {
   });
 
   const onSubmit = (data: FormData) => {
+    console.log("data", data);
     writeContract({
       address: contractAddressContestFactory,
       abi: contestFactoryContractAbi,
@@ -195,7 +196,13 @@ const CreateContentClient = () => {
                 name="description"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <ReactQuill theme="snow" value={value} onChange={onChange} />
+                  <ReactQuill
+                    theme="snow"
+                    value={value}
+                    onChange={onChange}
+                    modules={reactQuillModules}
+                    formats={reactQuillFormat}
+                  />
                 )}
               />
               <FormErrorTextMessage errors={errors?.description} />

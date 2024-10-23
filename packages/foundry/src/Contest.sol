@@ -47,7 +47,7 @@ contract Contest is Ownable {
 
     mapping(address => uint256) public s_participantEntryCount;
     mapping(uint256 => ParticipantEntry) private s_entry;
-    mapping(address => mapping(uint256 => bool)) private s_hasVoted;
+    mapping(address => bool) private s_hasVoted;
 
     bool public s_isCanceled;
     uint256 public s_totalVotes;
@@ -292,7 +292,7 @@ contract Contest is Ownable {
     }
 
     function getHasVoted(address voter, uint256 entryId) external view returns (bool) {
-        return s_hasVoted[voter][entryId];
+        return s_hasVoted[voter];
     }
 
     /**
@@ -351,11 +351,11 @@ contract Contest is Ownable {
             revert Contest__InvalidOrDeletedEntry(entryId);
         }
 
-        if (s_hasVoted[msg.sender][entryId]) {
+        if (s_hasVoted[msg.sender]) {
             revert Contest__AlreadyVotedForEntry();
         }
 
-        s_hasVoted[msg.sender][entryId] = true;
+        s_hasVoted[msg.sender] = true;
         s_totalVotes++;
         s_entry[entryId].numberOfVotes++;
 

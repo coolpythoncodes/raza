@@ -1,14 +1,14 @@
 // context/index.tsx
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createAppKit } from "@reown/appkit/react";
-import { anvil, liskSepolia } from "@reown/appkit/networks";
-import React, { type ReactNode } from "react";
-import { cookieToInitialState, WagmiProvider } from "wagmi";
-import { siteConfig } from "@/lib/site";
-import { wagmiAdapter, projectId } from "@/config/wagmi-config";
+import { projectId, wagmiAdapter } from "@/config/wagmi-config";
 import { env } from "@/env";
+import { siteConfig } from "@/lib/site";
+import { anvil, liskSepolia } from "@reown/appkit/networks";
+import { createAppKit } from "@reown/appkit/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { type ReactNode } from "react";
+import { cookieToInitialState, WagmiProvider } from "wagmi";
 
 // Set up queryClient
 const queryClient = new QueryClient();
@@ -19,7 +19,7 @@ if (!projectId) {
 
 // Set up metadata
 const metadata = {
-  name: "Raza",
+  name: "vaza",
   description: siteConfig.description,
   url: "https://vaza.vercel.app/", // origin must match your domain & subdomain
   icons: ["https://assets.reown.com/reown-profile-pic.png"],

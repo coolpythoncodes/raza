@@ -32,3 +32,35 @@ export const statusConfig = {
     style: "bg-purple-100 text-purple-800 border-purple-300",
   },
 };
+
+export const reactQuillFormat = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "link",
+  "color",
+  "image",
+  "background",
+  "align",
+  "size",
+  "font",
+];
+
+export const reactQuillModules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    // [{ size: [] }],
+    //   [{ font: [] }],
+    [{ align: ["right", "center", "justify"] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "image"],
+    //   [{ color: ["red", "#785412"] }],
+    //   [{ background: ["red", "#785412"] }],
+  ],
+};

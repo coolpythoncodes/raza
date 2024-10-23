@@ -8,6 +8,7 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 import { type Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: {
@@ -25,10 +26,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${kanit.variable} ${kanit.className}`}>
       <body className="flex min-h-dvh flex-col bg-[#2C1F48]">
-        <div className="fixed top-0 z-[9999] flex h-14 w-full items-center justify-center bg-yellow-400 text-center text-[#2C1F48]">
+        <div className="fixed top-0 z-20 flex h-14 w-full items-center justify-center bg-yellow-400 text-center text-[#2C1F48]">
           <p className="text-sm font-semibold">
-            You are currently using Lisk Testnet environment. Please note that
-            all transactions are for testing purposes only.
+            You are currently using Lisk Testnet environment. Get Lisk sepolia{" "}
+            <Link
+              className="text-blue-700 underline"
+              href="https://console.optimism.io/faucet"
+              target="_blank"
+            >
+              here
+            </Link>
           </p>
         </div>
         <Navbar />

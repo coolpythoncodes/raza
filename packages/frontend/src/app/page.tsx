@@ -1,4 +1,4 @@
-import { howRazaWorks, whyRaza } from "@/components/common/extras";
+import { howvazaWorks, whyvaza } from "@/components/common/extras";
 import HeadingWithArrow from "@/components/common/heading-with-arrow";
 import { Icons } from "@/components/common/icons";
 import PageWrapper from "@/components/common/page-wrapper";
@@ -34,7 +34,7 @@ export default function HomePage() {
 
       {/* Partner */}
       <section className="relative flex h-[119px] items-center bg-partner-section-bg bg-center bg-no-repeat before:z-10 after:absolute after:left-0 after:top-0 after:h-full after:w-full after:bg-partner-section-gradient after:content-['']">
-        <PageWrapper className="z-50 flex items-center justify-center">
+        <PageWrapper className="z-10 flex items-center justify-center">
           <div className="flex flex-col items-center gap-y-1">
             <h3 className="text-center text-2xl font-normal leading-[38px] text-[#37265B]">
               Our Partner
@@ -49,14 +49,14 @@ export default function HomePage() {
       <div className="space-y-[60px] pt-[60px]">
         {/* Contest */}
         <Contest />
-        {/* Why Raza */}
+        {/* Why vaza */}
         <section>
           <PageWrapper>
-            <HeadingWithArrow text="Why Raza" />
+            <HeadingWithArrow text="Why vaza" />
             <div className="grid grid-cols-1 gap-y-8 pt-10 md:pt-16 lg:grid-cols-3 lg:gap-x-5">
-              {whyRaza?.map((item, index) => (
+              {whyvaza?.map((item, index) => (
                 <div
-                  key={`why-raza-${index}`}
+                  key={`why-vaza-${index}`}
                   className="space-y-2 text-center"
                 >
                   <div className="flex items-center">
@@ -75,14 +75,14 @@ export default function HomePage() {
             </div>
           </PageWrapper>
         </section>
-        {/* How Raza Works */}
+        {/* How vaza Works */}
         <section className="pb-[100px]">
           <PageWrapper>
-            <HeadingWithArrow text="How Raza Works" />
+            <HeadingWithArrow text="How vaza Works" />
             <div className="grid grid-cols-1 gap-y-8 pt-10 md:pt-16 lg:grid-cols-3 lg:gap-x-5">
-              {howRazaWorks.map((item, index) => (
+              {howvazaWorks.map((item, index) => (
                 <div
-                  key={`how-raza-works-${index}`}
+                  key={`how-vaza-works-${index}`}
                   className="border-gradient flex transform flex-col items-center space-y-3 rounded-2xl py-6 pl-[31px] pr-8 text-center transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
                 >
                   {item?.icon}

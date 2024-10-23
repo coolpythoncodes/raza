@@ -1,10 +1,10 @@
-# Raza: Contest Management Smart Contract Suite
+# Vaza: Contest Management Smart Contract Suite
 
-Raza is a decentralized contest management platform built on the Ethereum blockchain. The platform allows organizers to create and manage contests, while participants can submit entries and vote during the voting phase. The system ensures transparency and security by leveraging smart contracts.
+Vaza is a decentralized contest management platform built on the Ethereum blockchain. The platform allows organizers to create and manage contests, while participants can submit entries and vote during the voting phase. The system ensures transparency and security by leveraging smart contracts.
 
 ### Smart Contracts Overview
 
-The Raza project consists of two core smart contracts:
+The Vaza project consists of two core smart contracts:
 
 **ContestFactory:** Handles the creation of new contests and stores information about all deployed contests.
 
@@ -25,8 +25,8 @@ Clone and Set Up the Project
 1. **Clone and Set Up the Project**
 
 ```shell bash
-git clone https://github.com/coolpythoncodes/raza
-cd raza
+git clone https://github.com/coolpythoncodes/vaza
+cd vaza
 pnpm install
 ```
 
@@ -50,4 +50,4 @@ Give a ⭐ if you like this project!
 
 ## Useful links
 
-- [Verified Contest Factory address on Blockscout etherscan](https://sepolia-blockscout.lisk.com/address/0x80c1fd53832d6a0693cdeb5d4db601435ac6eeca)
+- [Verified Contest Factory address on Blockscout etherscan](https://sepolia-blockscout.lisk.com/address/0x1fe9dcf5d7c36fda5ea3f32a12cb49f8a4b5a614)

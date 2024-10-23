@@ -16,7 +16,7 @@ export const navLinks = [
   },
 ];
 
-export const whyRaza = [
+export const whyvaza = [
   {
     title: "Transparent & Fair Competitions",
     description:
@@ -34,7 +34,7 @@ export const whyRaza = [
   },
 ];
 
-export const howRazaWorks = [
+export const howvazaWorks = [
   {
     icon: <Icons.vote />,
     title: "Create a Contest",
