@@ -1,6 +1,6 @@
 # Vaza: Contest Management Smart Contract Suite
 
-Vaza is a decentralized contest management platform built on the Ethereum blockchain. The platform allows organizers to create and manage contests, while participants can submit entries and vote during the voting phase. The system ensures transparency and security by leveraging smart contracts.
+Vaza is a decentralized contest management platform built on the Lisk blockchain. The platform allows organizers to create and manage contests, while participants can submit entries and vote during the voting phase. The system ensures transparency and security by leveraging smart contracts.
 
 ### Smart Contracts Overview
 
