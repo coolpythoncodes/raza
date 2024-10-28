@@ -117,3 +117,11 @@
 .ql-toolbar.ql-snow + .ql-container.ql-snow {
   height: 200px;
 }
+
+.ant-picker .ant-picker-input > input::placeholder {
+  color: white !important;
+}
+
+.anticon {
+  color: white !important;
+}

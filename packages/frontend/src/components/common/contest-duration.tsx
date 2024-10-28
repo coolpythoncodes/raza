@@ -8,6 +8,7 @@ type Props = {
   votingStartTime: bigint;
   votingEndTime: bigint;
   status: number;
+  isCanceled?: boolean;
 };
 
 const ContestDuration = ({
@@ -21,30 +22,61 @@ const ContestDuration = ({
   const entryEnd = Number(entryEndTime) * 1000;
   const votingStart = Number(votingStartTime) * 1000;
   const votingEnd = Number(votingEndTime) * 1000;
-  console.log("entryStart", entryStart);
-  console.log("Date.now()", Date.now());
+  const now = Date.now();
+
+  const getContestStatus = () => {
+    if (status === ContestStatus.Canceled) {
+      return ContestStatus.Canceled;
+    }
+    if (now < entryStart) {
+      return ContestStatus.Inactive;
+    }
+    if (now >= entryStart && now <= entryEnd) {
+      return ContestStatus.OpenForParticipants;
+    }
+    if (now > entryEnd && now >= votingStart && now <= votingEnd) {
+      return ContestStatus.VotingStarted;
+    }
+    if (now > votingEnd) {
+      return ContestStatus.Ended;
+    }
+    return ContestStatus.Waiting;
+  };
+
   const getContestDurationMessage = () => {
-    switch (status) {
+    const currentStatus = getContestStatus();
+
+    switch (currentStatus) {
+      case ContestStatus.Waiting:
+        return (
+          <>
+            <p>Kindly wait</p>
+          </>
+        );
       case ContestStatus.Inactive:
         return (
           <>
-            <p>Contest is open in:</p>
+            <p>Contest opens in:</p>
             <Countdown date={entryStart} renderer={renderer} />
           </>
         );
+
       case ContestStatus.OpenForParticipants:
         return (
           <div className="flex flex-col gap-y-2">
             <div className="flex items-center gap-x-1">
-              <p>Contest participation ends in:</p>
+              <p>Entry period ends in:</p>
               <Countdown date={entryEnd} renderer={renderer} />
             </div>
-            <div className="flex items-center gap-x-1">
-              <p>Voting starts in:</p>
-              <Countdown date={votingStart} renderer={renderer} />
-            </div>
+            {now < votingStart && (
+              <div className="flex items-center gap-x-1">
+                <p>Voting begins in:</p>
+                <Countdown date={votingStart} renderer={renderer} />
+              </div>
+            )}
           </div>
         );
+
       case ContestStatus.VotingStarted:
         return (
           <>
@@ -52,14 +84,18 @@ const ContestDuration = ({
             <Countdown date={votingEnd} renderer={renderer} />
           </>
         );
+
       case ContestStatus.Canceled:
-        return <p>Contest has been canceled.</p>;
+        return <p>Contest has been canceled</p>;
+
       case ContestStatus.Ended:
-        return <p>Contest has ended.</p>;
+        return <p>Contest has ended</p>;
+
       default:
-        return "";
+        return null;
     }
   };
+
   return (
     <div className="flex items-center gap-x-1 text-xs text-[#D7C5FF]">
       {getContestDurationMessage()}

@@ -71,8 +71,7 @@ const SubmitEntry = ({ address }: Props) => {
       args: [data?.content],
     });
   };
-  console.log("confirmError", confirmError);
-  console.log("writeError", writeError);
+
   useEffect(() => {
     if (isWriteError) {
       toast({

@@ -6,20 +6,21 @@
 import { renderer } from "@/components/common/count-down-renderer";
 import { Icons } from "@/components/common/icons";
 import Loader from "@/components/common/loader";
+import NoContest from "@/components/common/no-contest";
 import PageWrapper from "@/components/common/page-wrapper";
 import UserAddress from "@/components/common/user-address";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { contestContractAbi } from "@/lib/constants";
 import { ContestStatus } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import numeral from "numeral";
+import { useEffect } from "react";
 import Countdown from "react-countdown";
 import { TwitterShareButton } from "react-share";
 import { useBlockNumber, useReadContracts } from "wagmi";
 import Entry from "./entry";
 import SubmitEntry from "./submit-entry";
 import Winners from "./winners";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 type Props = {
   slug: `0x${string}`;
@@ -59,7 +60,6 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
       },
     ],
   });
-
   const entryStartTime = new Date(
     // @ts-expect-error unknown error
     Number(data?.[0]?.result?.entryStartTime) * 1000,
@@ -123,6 +123,9 @@ const ContestPageByAddressClient = ({ slug }: Props) => {
   }, [blockNumber]);
 
   if (isPending) return <Loader />;
+
+  if (data?.[0]?.error) return <NoContest />;
+
   return (
     <main className="pb-[100px] pt-6 text-white">
       <PageWrapper className="">

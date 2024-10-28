@@ -17,10 +17,12 @@ export const ContestStatus = {
   VotingStarted: 2,
   Canceled: 3,
   Ended: 4,
+  Waiting: 5,
 };
 
 export const statusConfig = {
   [ContestStatus.Inactive]: { text: "Upcoming", style: "bg-[#BB8FFF]" },
+  [ContestStatus.Waiting]: { text: "Waiting", style: "bg-[#BB8FFF]" },
   [ContestStatus.OpenForParticipants]: { text: "Open", style: "bg-green-100" },
   [ContestStatus.VotingStarted]: {
     text: "Voting in Progress",

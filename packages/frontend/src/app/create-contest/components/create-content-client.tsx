@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
@@ -5,31 +8,28 @@ import FormErrorTextMessage from "@/components/common/form-error-text-message";
 import HeadingWithArrow from "@/components/common/heading-with-arrow";
 import PageWrapper from "@/components/common/page-wrapper";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import {
   contestFactoryContractAbi,
   contractAddressContestFactory,
 } from "@/lib/constants";
 import { routes } from "@/lib/routes";
-import { cn, reactQuillFormat, reactQuillModules } from "@/lib/utils";
+import { reactQuillFormat, reactQuillModules } from "@/lib/utils";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { DatePicker, type GetProps } from "antd";
+import dayjs from "dayjs";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { date, number, object, ref, string, type InferType } from "yup";
+import { date, number, object, string, type InferType } from "yup";
+
+const { RangePicker } = DatePicker;
 
 const createContestFormSchema = object({
   title: string().required("Please provide a title for the contest."),
@@ -42,26 +42,50 @@ const createContestFormSchema = object({
     ),
     entryEndTime: date()
       .required("The entry period (start and end dates) is required.")
-      .min(
-        ref("entryStartTime"),
-        "Entry end time must be after entry start time",
+      .test(
+        "isAfter",
+        "Entry end time must be strictly after entry start time",
+        function (endTime) {
+          const startTime = this.parent.entryStartTime;
+          if (!startTime || !endTime) return true; // Skip validation if either date is missing
+          return endTime > startTime; // Ensures end time is strictly after start time
+        },
       ),
   }),
+
   votingPeriod: object({
-    votingStartTime: date().required(
-      "The voting period (start and end dates) is required.",
-    ),
-    // .min(
-    //   ref("entryPeriod.entryEndTime"),
-    //   "Voting start time must be after entry end time",
-    // ),
-    votingEndTime: date().required(
-      "The voting period (start and end dates) is required.",
-    ),
-    // .min(
-    //   ref("votingStartTime"),
-    //   "Voting end time must be after voting start time",
-    // ),
+    votingStartTime: date()
+      .required("The voting period (start and end dates) is required.")
+      .test(
+        "isAfterEntryEnd",
+        "Voting start time must be strictly after entry end time",
+        function (votingStart) {
+          const entryEnd = this.parent.entryPeriod?.entryEndTime;
+          if (!entryEnd || !votingStart) return true;
+          return votingStart > entryEnd;
+        },
+      ),
+    votingEndTime: date()
+      .required("The voting period (start and end dates) is required.")
+      .test(
+        "isAfterVotingStart",
+        "Voting end time must be strictly after voting start time",
+        function (votingEnd) {
+          const votingStart = this.parent.votingStartTime;
+          if (!votingStart || !votingEnd) return true;
+          return votingEnd > votingStart;
+        },
+      )
+      .test(
+        "isAfterEntryPeriod",
+        "Voting end time must be strictly after entry period",
+        function (votingEnd) {
+          const entryEnd = this.parent.entryPeriod?.entryEndTime;
+          const entryStart = this.parent.entryPeriod?.entryStartTime;
+          if (!entryEnd || !entryStart || !votingEnd) return true;
+          return votingEnd > entryEnd && votingEnd > entryStart;
+        },
+      ),
   }),
 
   numAllowedEntrySubmissions: number()
@@ -77,6 +101,13 @@ const createContestFormSchema = object({
     .typeError("Invalid input")
     .required(
       "Please specify the total number of entries allowed for the contest.",
+    )
+    .when("numberOfWinners", (numberOfWinners, schema) =>
+      // @ts-expect-error unknown error
+      schema.moreThan(
+        numberOfWinners,
+        "Maximum Total Entries must be strictly greater than number of winners",
+      ),
     ),
   numberOfWinners: number()
     .positive("Invalid input")
@@ -88,10 +119,12 @@ const createContestFormSchema = object({
 });
 
 type FormData = InferType<typeof createContestFormSchema>;
+type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 const CreateContentClient = () => {
   const { toast } = useToast();
   const router = useRouter();
+
   const {
     data: hash,
     isPending,
@@ -108,6 +141,70 @@ const CreateContentClient = () => {
   } = useWaitForTransactionReceipt({
     hash,
   });
+
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    // Can not select days before today
+    return current && current < dayjs().startOf("day");
+  };
+
+  const range = (start: number, end: number) => {
+    const result = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
+    return result;
+  };
+
+  const disabledRangeTime: RangePickerProps["disabledTime"] = (
+    current,
+    type,
+  ) => {
+    if (!current) return {};
+
+    const now = new Date();
+    const isToday = current.isSame(now, "day");
+
+    if (!isToday) {
+      return {}; // Don't disable any times for future dates
+    }
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+
+    if (type === "start") {
+      return {
+        disabledHours: () => range(0, currentHour),
+        disabledMinutes: () =>
+          current.hour() === now.getHours() ? range(0, currentMinute) : [],
+        disabledSeconds: () => {
+          if (
+            current.hour() === now.getHours() &&
+            current.minute() === now.getMinutes()
+          ) {
+            return range(0, currentSecond);
+          }
+          return [];
+        },
+      };
+    }
+
+    // For end time, only disable minutes and seconds when we're in the current hour
+    return {
+      disabledHours: () => range(0, currentHour),
+      disabledMinutes: () =>
+        current.hour() === now.getHours() ? range(0, currentMinute) : [],
+      disabledSeconds: () => {
+        if (
+          current.hour() === now.getHours() &&
+          current.minute() === now.getMinutes()
+        ) {
+          return range(0, currentSecond);
+        }
+        return [];
+      },
+    };
+  };
+
   const {
     register,
     handleSubmit,
@@ -125,22 +222,21 @@ const CreateContentClient = () => {
       args: [
         data?.title,
         data?.description,
-        Math.round(new Date().getTime() / 1000) + 100,
-        Math.round(new Date().getTime() / 1000) + 1000,
-        Math.round(new Date().getTime() / 1000) + 2000,
-        Math.round(new Date().getTime() / 1000) + 3000,
-        // Math.round(data?.entryPeriod?.entryStartTime.getTime() / 1000),
-        // Math.round(data?.entryPeriod?.entryEndTime.getTime() / 1000),
-        // Math.round(data?.votingPeriod?.votingStartTime.getTime() / 1000),
-        // Math.round(data?.votingPeriod?.votingEndTime.getTime() / 1000),
+        // Math.round(new Date().getTime() / 1000) + 100,
+        // Math.round(new Date().getTime() / 1000) + 1000,
+        // Math.round(new Date().getTime() / 1000) + 2000,
+        // Math.round(new Date().getTime() / 1000) + 3000,
+        Math.round(data?.entryPeriod?.entryStartTime.getTime() / 1000),
+        Math.round(data?.entryPeriod?.entryEndTime.getTime() / 1000),
+        Math.round(data?.votingPeriod?.votingStartTime.getTime() / 1000),
+        Math.round(data?.votingPeriod?.votingEndTime.getTime() / 1000),
         data?.numAllowedEntrySubmissions,
         data?.maxTotalEntries,
         data?.numberOfWinners,
       ],
     });
   };
-  console.log("writeError", writeError);
-  console.log("confirmError", confirmError);
+
   useEffect(() => {
     if (isWriteError) {
       toast({
@@ -171,10 +267,8 @@ const CreateContentClient = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConfirmed]);
 
-  console.log("new Date().now", new Date().getTime());
-
   return (
-    <main className="pb-[100px] pt-5 text-white md:pt-[60px]">
+    <main className="pb-[100px] pt-5 !text-white md:pt-[60px]">
       <PageWrapper>
         <HeadingWithArrow text="Create Contest" />
         <form
@@ -213,54 +307,28 @@ const CreateContentClient = () => {
               <Controller
                 name="entryPeriod"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="entryPeriod"
-                        className={cn(
-                          "h-[60px] w-full justify-start rounded-[8px] border border-white bg-[#332258] text-left font-normal text-white",
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {value?.entryStartTime ? (
-                          value?.entryEndTime ? (
-                            <>
-                              {format(value?.entryStartTime, "LLL dd, y")} -{" "}
-                              {format(value?.entryEndTime, "LLL dd, y")}
-                            </>
-                          ) : (
-                            format(value?.entryStartTime, "LLL dd, y")
-                          )
-                        ) : (
-                          <span>Pick the entry period</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={value?.entryStartTime}
-                        selected={{
-                          from: value?.entryStartTime,
-                          to: value?.entryEndTime,
-                        }}
-                        onSelect={(range) => {
-                          onChange({
-                            entryStartTime: range?.from,
-                            entryEndTime: range?.to,
-                          });
-                        }}
-                        numberOfMonths={2}
-                        disabled={(date) => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                render={({ field: { onChange } }) => (
+                  <RangePicker
+                    showTime
+                    onChange={(range) => {
+                      onChange({
+                        // @ts-expect-error unknown error
+                        entryStartTime: range?.[0]?.$d,
+                        // @ts-expect-error unknown error
+                        entryEndTime: range?.[1]?.$d,
+                      });
+                    }}
+                    disabledDate={disabledDate}
+                    disabledTime={disabledRangeTime}
+                    className="!h-[60px] !bg-[#332258] !text-white placeholder:!text-white"
+                  />
                 )}
               />
               <FormErrorTextMessage
-                errors={errors?.entryPeriod?.entryStartTime}
+                errors={
+                  errors?.entryPeriod?.entryStartTime ??
+                  errors?.entryPeriod?.entryEndTime
+                }
               />
             </div>
 
@@ -269,50 +337,21 @@ const CreateContentClient = () => {
               <Controller
                 name="votingPeriod"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id="votingPeriod"
-                        className={cn(
-                          "h-[60px] w-full justify-start rounded-[8px] border border-white bg-[#332258] text-left font-normal text-white",
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {value?.votingStartTime ? (
-                          value?.votingEndTime ? (
-                            <>
-                              {format(value?.votingStartTime, "LLL dd, y")} -{" "}
-                              {format(value?.votingEndTime, "LLL dd, y")}
-                            </>
-                          ) : (
-                            format(value?.votingStartTime, "LLL dd, y")
-                          )
-                        ) : (
-                          <span>Pick the voting period</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={value?.votingStartTime}
-                        selected={{
-                          from: value?.votingStartTime,
-                          to: value?.votingEndTime,
-                        }}
-                        onSelect={(range) => {
-                          onChange({
-                            votingStartTime: range?.from,
-                            votingEndTime: range?.to,
-                          });
-                        }}
-                        numberOfMonths={2}
-                        disabled={(date) => date < new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                render={({ field: { onChange } }) => (
+                  <RangePicker
+                    showTime
+                    onChange={(range) => {
+                      onChange({
+                        // @ts-expect-error unknown error
+                        votingStartTime: range?.[0]?.$d,
+                        // @ts-expect-error unknown error
+                        votingEndTime: range?.[1]?.$d,
+                      });
+                    }}
+                    disabledDate={disabledDate}
+                    disabledTime={disabledRangeTime}
+                    className="!h-[60px] !bg-[#332258] !text-white placeholder:!text-white"
+                  />
                 )}
               />
               <FormErrorTextMessage

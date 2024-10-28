@@ -1,5 +1,21 @@
-// @ts-expect-error unknown error
-export const renderer = ({ days, hours, minutes, completed }: unknown) => {
+type Props = {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+  milliseconds?: number;
+  total?: number;
+  suffix?: string;
+  completed?: boolean;
+};
+
+export const renderer = ({
+  days,
+  hours,
+  minutes,
+  seconds,
+  completed,
+}: Props) => {
   if (completed) {
     return <span>Time is up!</span>;
   } else {
@@ -8,6 +24,7 @@ export const renderer = ({ days, hours, minutes, completed }: unknown) => {
         {days ? `${days} days ` : null}
         {hours ? `${hours} hrs ` : null}
         {minutes ? `${minutes} mins ` : null}
+        {seconds ? `${seconds} secs ` : null}
       </span>
     );
   }

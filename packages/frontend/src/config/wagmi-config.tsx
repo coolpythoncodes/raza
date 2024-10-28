@@ -1,6 +1,6 @@
 // config/index.tsx
 
-import { cookieStorage, createStorage } from "@wagmi/core";
+import { cookieStorage, createStorage, http } from "@wagmi/core";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { anvil, liskSepolia } from "@reown/appkit/networks";
 import { env } from "@/env";
@@ -21,6 +21,10 @@ export const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   projectId,
   networks,
+  transports: {
+    [anvil.id]: http(),
+    [liskSepolia.id]: http(),
+  },
 });
 
 export const config = wagmiAdapter.wagmiConfig;

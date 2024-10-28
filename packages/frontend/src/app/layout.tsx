@@ -1,11 +1,12 @@
 import Footer from "@/components/common/footer";
 import Navbar from "@/components/common/navbar";
+import { Toaster } from "@/components/ui/toaster";
 import ContextProvider from "@/context";
 import { kanit } from "@/lib/font";
 import { siteConfig } from "@/lib/site";
-import { headers } from "next/headers";
 import "@/styles/globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { headers } from "next/headers";
 
 import { type Metadata } from "next";
 import Link from "next/link";
@@ -16,7 +17,30 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  keywords: siteConfig.keywords,
+  manifest: `${siteConfig.url}manifest.json`,
+  openGraph: {
+    type: "website",
+    title: siteConfig.name,
+    siteName: siteConfig.name,
+    url: siteConfig.url,
+    locale: "en_US",
+    images: [
+      {
+        url: `${siteConfig.url}og.png`,
+        width: 800,
+        height: 600,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    creator: "@devrapture",
+    images: [`${siteConfig.url}og.png`], // Must be an absolute URL
+  },
+  // icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
 export default function RootLayout({
@@ -40,7 +64,9 @@ export default function RootLayout({
         </div>
         <Navbar />
         <ContextProvider cookies={cookies}>
-          <div className="flex-1">{children}</div>
+          <div className="flex-1">
+            <AntdRegistry>{children}</AntdRegistry>
+          </div>
           <Toaster />
         </ContextProvider>
         <Footer />

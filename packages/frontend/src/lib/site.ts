@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "vaza",
-  url: "",
-  ogImage: "",
+  name: "Vaza",
+  url: "https://vaza.vercel.app/",
+  ogImage: "https://vaza.vercel.app/og.png",
   description:
     "Join creative contests, submit your entries, vote, and win exciting prizes on our contest platform",
   // links: {

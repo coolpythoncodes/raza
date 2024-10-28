@@ -21,8 +21,8 @@ if (!projectId) {
 const metadata = {
   name: "vaza",
   description: siteConfig.description,
-  url: "https://vaza.vercel.app/", // origin must match your domain & subdomain
-  icons: ["https://assets.reown.com/reown-profile-pic.png"],
+  url: siteConfig.url, // origin must match your domain & subdomain
+  icons: [`${siteConfig.url}og.png`],
 };
 
 // Create the modal

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
@@ -20,11 +21,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Icons } from "@/components/common/icons";
-import { Button } from "@/components/ui/button";
-import { routes } from "@/lib/routes";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import NoContest from "@/components/common/no-contest";
 
 const ContestPageClient = () => {
   const queryClient = useQueryClient();
@@ -74,22 +73,18 @@ const ContestPageClient = () => {
         {data?.length ? (
           <div className="mt-[21px] grid grid-cols-1 gap-y-8 lg:grid-cols-3 lg:gap-x-5">
             {/* @ts-expect-error unknown error */}
-            {data?.map((address, index) => (
-              <ContestItem
-                key={`deployed-contest-${index}`}
-                address={address}
-              />
-            ))}
+            {data
+              ?.slice()
+              ?.reverse()
+              ?.map((address, index) => (
+                <ContestItem
+                  key={`deployed-contest-${index}`}
+                  address={address}
+                />
+              ))}
           </div>
         ) : (
-          <div className="border-gradient mx-auto mt-[41px] flex max-w-[360px] flex-col items-center gap-y-2 py-6 text-white">
-            <Icons.infoEmpty />
-            <p className="text-xl font-normal leading-8">No contest here</p>
-            <Link href={routes.createContest}>
-              {" "}
-              <Button className="h-10">Create contest</Button>
-            </Link>
-          </div>
+          <NoContest />
         )}
       </PageWrapper>
     </main>
