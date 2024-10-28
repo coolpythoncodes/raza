@@ -103,8 +103,8 @@ const createContestFormSchema = object({
       "Please specify the total number of entries allowed for the contest.",
     )
     .when("numberOfWinners", (numberOfWinners, schema) =>
-      // @ts-expect-error unknown error
       schema.moreThan(
+        // @ts-expect-error unknown error
         numberOfWinners,
         "Maximum Total Entries must be strictly greater than number of winners",
       ),
